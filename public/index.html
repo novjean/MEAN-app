@@ -1,0 +1,618 @@
+<!DOCTYPE>
+<html ng-app="quzAnsApp">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Patton labs and N2s Global's trainers and consultants portal.">
+    <meta name="author" content="Novjean Kannathara">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js"></script>
+    <script type="text/javascript" src="controllers/controller.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <title>QuizAns</title>
+</head>
+
+<body>
+    <!-- Main Section -->
+    <div ng-controller="AppCtrl">
+
+        <!--Heade Section-->
+        <div class="navbar navbar-inverse navbar-static-top">
+            <div class="container" ng-controller="HeaderCtrl">
+                <a href="#" class="navbar-brand">QuizAns </a>
+                <button class="navbar-toggle" data-toggle="collapse" data-target=".navHeaderCollapse"></button>
+                <div class="collapse navbar-collapse navHeaderCollapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <p ng-show="signedInMode" style="margin-right: 20;" class="navbar-text navbar-right">Signed in as {{accessName}}</p>
+                        </li>
+                        <li class="active" ng-show="signedInMode"><a href="#">Home</a></li>
+                        <li><a href='#' ng-show="signedInMode" ng-click="logout()">Logout</a></li>
+                        <!--<li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Account</a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Profile</a></li>
+                                <li><a href="#">Password</a></li>
+                            </ul>
+                        </li>-->
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!--End Header -->
+
+        <!-- Login Section -->
+        <div class="container" ng-show="loginMode">
+            <div class="jumbotron">
+                <h1 class="display-3">Welcome to QuizAns!</h1>
+                <p class="lead">This is the alpha build of QuizAns. Exciting updates are on it's way</p>
+            </div>
+            <div class="col-md-5">
+                <blockquote style="padding-top: 150px;" class="blockquote blockquote-reverse">
+                    <p class="mb-0">Education is the passport to the future, for tomorrow belongs to those who prepare for it today.</p>
+                    <footer class="blockquote-footer"><cite title="Source Title">Malcolm X</cite></footer>
+                </blockquote>
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-6">
+                <table class="table">
+                    <thead>
+                    </thead>
+                    <tbody>
+                        <table class="table">
+                            <thead>
+                                <th>
+                                    <h2>Login</h2>
+                                </th>
+                                <th></th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label>Account Type</label>
+                                    </td>
+                                    <td>
+                                        <select class="form-control" ng-model="useraccess" ng-options="x for x in accesstypes"></select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>Username</label>
+                                    </td>
+                                    <td>
+                                        <input class="form-control" type="text" ng-model="username">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>Password</label>
+                                    </td>
+                                    <td>
+                                        <input class="form-control" type="password" ng-model="password">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary pull-right" ng-click=login()>Login</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Login Ends -->
+
+        <!-- Admin Section -->
+        <div ng-if="adminMode" ng-controller="AdminCtrl" class="container">
+            <div class="row">
+                <div class="btn-group btn-group-justified" role="group" aria-label="...">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-default" ng-click="showEmployees()">Employees</button>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-default" ng-click="showTrainers()">Trainers</button>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-default" ng-click="showTests()">Tests</button>
+                    </div>
+                </div>
+                <div ng-show="searchMode" class="form-group">
+                    <input type="text" class="form-control" ng-model="search" placeholder="Search" style="width: 300px; margin-top: 20;">
+                </div>
+            </div>
+            <div class="container" ng-show="adminemployeemode" ng-controller="EmployeeCtrl">
+                <div class="col-md-12">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Class</th>
+                                <th>Email</th>
+                                <th>Number</th>
+                                <th>Action</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input class="form-control" ng-model="employee.firstname"></td>
+                                <td><input class="form-control" ng-model="employee.lastname"></td>
+                                <td>
+                                    <select class="form-control" ng-model="employee.class" ng-options="type for type in employeeTypes">
+                                </select>
+                                </td>
+                                <td><input class="form-control" ng-model="employee.email"></td>
+                                <td><input class="form-control" ng-model="employee.number"></td>
+                                <td><button class="btn btn-primary" ng-click=addEmployee()>Add Employee</button></td>
+                                <td><button class="btn btn-info" ng-click=updateEmployee()>Update</button></td>
+                                <td><button class="btn btn-info" ng-click=clearEmployee()>Clear</button></td>
+                            </tr>
+                            <tr class="animate-repeat" ng-repeat="employee in employeelist | filter:search">
+                                <td>{{employee.firstname}}</td>
+                                <td>{{employee.lastname}}</td>
+                                <td>{{employee.class}}</td>
+                                <td>{{employee.email}}</td>
+                                <td>{{employee.number}}</td>
+                                <td><button class="btn btn-danger" ng-click="removeEmployee(employee._id)">Remove</button></td>
+                                <td><button class="btn btn-warning" ng-click="editEmployee(employee._id)">Edit</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-1">
+                </div>
+                <!--<div class="row" style="float: right">
+                    <button class="btn btn-info">Next Page</button>
+                </div>-->
+
+            </div>
+            <div class="container" ng-show="admintrainermode" ng-controller="TrainerCtrl">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Teach</th>
+                            <th>Email</th>
+                            <th>Number</th>
+                            <th>Action</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input class="form-control" ng-model="trainer.firstname"></td>
+                            <td><input class="form-control" ng-model="trainer.lastname"></td>
+                            <!--<td><input class="form-control" ng-model="trainer.class"></td>-->
+                            <td>
+                                <select class="form-control" ng-model="trainer.class" ng-options="class for class in trainerclasses">
+                                </select>
+                            </td>
+                            <td><input class="form-control" ng-model="trainer.email"></td>
+                            <td><input class="form-control" ng-model="trainer.number"></td>
+                            <td><button class="btn btn-primary" ng-click=addTrainer()>Add Trainer</button></td>
+                            <td><button class="btn btn-info" ng-click=updateTrainer()>Update</button></td>
+                            <td><button class="btn btn-info" ng-click=clearTrainer()>Clear</button></td>
+                            <tr>
+                                <tr ng-repeat="trainer in trainerlist | filter:search">
+                                    <td>{{trainer.firstname}}</td>
+                                    <td>{{trainer.lastname}}</td>
+                                    <td>{{trainer.class}}</td>
+                                    <td>{{trainer.email}}</td>
+                                    <td>{{trainer.number}}</td>
+                                    <td><button class="btn btn-danger" ng-click="removeTrainer(trainer._id)">Remove</button></td>
+                                    <td><button class="btn btn-warning" ng-click="editTrainer(trainer._id)">Edit</button></td>
+                                </tr>
+                            </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- End Admin Section -->
+
+        <!-- Trainer Section -->
+        <div ng-if="trainerMode" class="container" ng-controller="TrainerAccessCtrl">
+            <div class="row">
+                <div class="btn-group btn-group-justified" role="group" aria-label="...">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-default" ng-click="showEmployees()">Employees</button>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-default" ng-click="showTests()">Tests</button>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-default" ng-click="addTest()">Add Test</button>
+                    </div>
+                </div>
+                <div ng-show="searchMode" class="form-group">
+                    <input type="text" class="form-control" ng-model="search" placeholder="Search" style="width: 300px; margin-top: 20;">
+                </div>
+            </div>
+            <div class="container" ng-show="trainerEmployeeMode" ng-controller="EmployeeCtrl">
+                <div class="container">
+                    <div class="col-md-9">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Class</th>
+                                    <th>Email</th>
+                                    <th>Number</th>
+                                    <th>&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="employee in employeelist | filter:search">
+                                    <td>{{employee.firstname}}</td>
+                                    <td>{{employee.lastname}}</td>
+                                    <td>{{employee.class}}</td>
+                                    <td>{{employee.email}}</td>
+                                    <td>{{employee.number}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-3">
+                    </div>
+                </div>
+                <!--<div class="row" style="float: right">
+                    <button class="btn btn-info">Next Page</button>
+                </div>-->
+            </div>
+            <div class="container" ng-show="trainerViewTestMode">
+                <div class="container">
+                    <div class="col-md-9">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Domain</th>
+                                    <th>Title</th>
+                                    <th>Author</th>
+                                    <th>Created Date</th>
+                                    <th>&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="test in testlist | filter:search">
+                                    <td>{{test.domain}}</td>
+                                    <td>{{test.title}}</td>
+                                    <td>{{test.author}}</td>
+                                    <td>{{test.createDate | date}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-3">
+                    </div>
+                </div>
+            </div>
+            <div class="container" ng-show="trainerAddTestMode">
+                <div class="row">
+                    <div class="col-md-9" ng-show="addTestDetailsMode">
+                        <form style="padding-top: 30px;">
+                            <fieldset>
+                                <div class="col-md-4">
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">Author</label>
+                                        <div class="col-10">
+                                            <input class="form-control" value="{{accessName}}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">Domain</label>
+                                        <div class="col-10">
+                                            <select class="form-control form-control-warning" ng-model="test.domain" ng-options="class for class in trainerclasses">
+                                             </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group row">
+                                        <label for="example-date-input" class="col-2 col-form-label">Date</label>
+                                        <div class="col-10">
+                                            <input class="form-control" value="{{today | date}}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <div class="form-group">
+                                <label for="testTitle">Test Title</label>
+                                <input type="text" ng-model="test.title" class="form-control form-control-warning" aria-describedby="testTitleHelp" placeholder="Enter title of test">
+                                <small id="testTitleHelp" class="form-text text-muted">Please mention the title.</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="testDescription">Test Description</label>
+                                <input type="text" ng-model="test.description" class="form-control" rows="2" aria-describedby="testDescriptionHelp" placeholder="Enter description of test">
+                                <small id="testDescriptionHelp" class="form-text text-muted">Enter few words describing topics and nature of the test.</small>
+                            </div>
+                            <div class="form-group">
+                                <button ng-click="cancelAddTest()" style="margin-top: 25;" class="btn btn-warning pull-left">Cancel</button>
+                                <button ng-click="addTestDetails()" style="margin-top: 25;" class="btn btn-primary pull-right">Add Questions</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-9" ng-show="addQuestionMode">
+                        <form style="padding-top: 30px;">
+                            <fieldset>
+                                <div class="col-md-4">
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">Author</label>
+                                        <div class="col-10">
+                                            <input class="form-control" value="{{accessName}}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">Domain</label>
+                                        <div class="col-10">
+                                            <select class="form-control form-control-warning" ng-model="test.domain" ng-options="class for class in trainerclasses" disabled>
+                                             </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group row">
+                                        <label for="example-date-input" class="col-2 col-form-label">Date</label>
+                                        <div class="col-10">
+                                            <input class="form-control" value="{{today | date}}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <div>
+                                <div class="form-group">
+                                    <label for="testTitle">Test Title</label>
+                                    <input type="text" ng-model="test.title" class="form-control form-control-warning" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label for="testQuestion">Question {{questionNumber}}</label>
+                                    <input type="text" ng-model="question.text" class="form-control" aria-describedby="questionHelp">
+                                    <small id="questionHelp" class="form-text text-muted">Enter question.</small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="testOptions">Options</label>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-group">
+                                        <label>Option 1</label>
+                                        <textarea ng-model="question.option1" class="form-control" rows="2" placeholder="Enter option 1."></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Option 2</label>
+                                        <textarea ng-model="question.option2" class="form-control" rows="2" placeholder="Enter option 2."></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Option 3</label>
+                                        <textarea ng-model="question.option3" class="form-control" rows="2" placeholder="Enter option 3."></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Option 4</label>
+                                        <textarea ng-model="question.option4" class="form-control" rows="2" placeholder="Enter option 4."></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label style="padding-top: 30px;">Correct Answer</label>
+                                </div>
+                                <div class="col-md-1"></div>
+                                <div class="col-md-11">
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <input type="radio" ng-model="question.correctAnswer" value="option1">
+                                            <label>{{question.option1}}</label>
+                                        </div>
+                                        <div class="row">
+                                            <input type="radio" ng-model="question.correctAnswer" value="option2">
+                                            <label>{{question.option2}}</label>
+                                        </div>
+                                        <div class="row">
+                                            <input type="radio" ng-model="question.correctAnswer" value="option3">
+                                            <label>{{question.option3}}</label>
+                                        </div>
+                                        <div class="row">
+                                            <input type="radio" ng-model="question.correctAnswer" value="option4">
+                                            <label>{{question.option4}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <button ng-click="submitTest()" style="margin-top: 25;" class="btn btn-primary pull-right">Finish</button>
+                                    <button ng-click="addQuestion()" style="margin-top: 25; margin-right: 25px;" class="btn btn-warning pull-left">Add Question</button>
+                                    <button ng-click="clearQuestionFields()" style="margin-top: 25; margin-right: 25px;" class="btn btn-info pull-left">Clear</button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="col-md-9" ng-show="successAddTestMode">
+                        <div class="container">
+                            <div class="row text-center">
+                                <div class="col-sm-6 col-sm-offset-3">
+                                    <br><br>
+                                    <h2 style="color:#0fad00">Success</h2>
+                                    <img src="http://osmhotels.com//assets/check-true.jpg">
+                                    <h3>Dear, {{accessName}}</h3>
+                                    <p style="font-size:20px;color:#5C5C5C;">Successfully added the test. Can view it in the tests section.</p>
+                                    <button ng-click="showTests()" class="btn btn-success">Show Tests</a>
+                                    <br><br>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    <div class="col-md-3">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Trainer Section -->
+
+        <!-- Employee Section -->
+        <div ng-if="employeeMode" class="container" ng-controller="EmployeeAccessCtrl">
+            <div class="row">
+                <div class="btn-group btn-group-justified" role="group" aria-label="...">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-default" ng-click="showEmployeeTests()">Tests</button>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-default" ng-click="progressReport()">Report</button>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-default" ng-click="viewResources()">Resources</button>
+                    </div>
+                </div>
+                <div ng-show="searchMode" class="form-group">
+                    <input type="text" class="form-control" ng-model="search" placeholder="Search" style="width: 300px; margin-top: 20;">
+                </div>
+            </div>
+            <div class="container" ng-show="employeeViewTestMode">
+                <div class="container">
+                    <div class="col-md-9" ng-show="employeeTestListMode">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Domain</th>
+                                    <th>Title</th>
+                                    <th>Author</th>
+                                    <th>Created Date</th>
+                                    <th>Completion Date</th>
+                                    <th>Action</th>
+                                    <th>&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="test in testlist | filter:search">
+                                    <td>{{test.domain}}</td>
+                                    <td>{{test.title}}</td>
+                                    <td>{{test.author}}</td>
+                                    <td>{{test.createDate | date}}</td>
+                                    <td>{{test.completionDate| date}}</td>
+                                    <td>
+                                        <button class="btn btn-primary" ng-click="takeTest(test._id)">Take Test</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div ng-show="takeTestSection" class="col-md-9">
+                        <div>
+                            <blockquote class="blockquote">
+                                <h1 class="display-1">{{test.title}}</h1>
+                                <footer class="blockquote-footer"><cite title="Source Title">{{test.author}}</cite> on {{test.createDate | date}}
+                                </footer>
+                            </blockquote>
+                        </div>
+
+                        <div ng-repeat="question in questions">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h3>{{$index + 1}}: {{question.text}}</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="custom-controls-stacked">
+                                        <label class="custom-control custom-radio">
+                                <input value="option1" ng-model="result.values[$index]" type="radio" class="custom-control-input">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">{{question.option1}}</span>
+                            </label>
+                                        <label class="custom-control custom-radio">
+                                <input value="option2" ng-model="result.values[$index]" type="radio" class="custom-control-input">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">{{question.option2}}</span>
+                            </label>
+                                        <label class="custom-control custom-radio">
+                                <input value="option3" ng-model="result.values[$index]" type="radio" class="custom-control-input">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">{{question.option3}}</span>
+                            </label>
+                                        <label class="custom-control custom-radio">
+                                <input value="option4" ng-model="result.values[$index]" type="radio" class="custom-control-input">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">{{question.option4}}</span>
+                            </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button ng-click="submitTest()" style="margin-top: 25;" class="btn btn-primary pull-right">Submit</button>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                    </div>
+                </div>
+            </div>
+
+            <div class="container" ng-show="employeeReportMode">
+                <div class="container">
+                    <div class="col-md-9">
+                        <table class="table table-inverse">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Domain</th>
+                                    <th>Test Title</th>
+                                    <th>Percentage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="result in resultlist | filter:search">
+                                    <td>{{result.takenDate|date}}</td>
+                                    <td>{{result.testdomain}}</td>
+                                    <td>{{result.testTitle}}</td>
+                                    <td>{{result.percentage}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-3">
+                    </div>
+                </div>
+            </div>
+
+            <div class="container" ng-show="employeeResourcesMode">
+                <div class="row">
+                    <div class="col-md-9">
+                    </div>
+                    <div class="col-md-3">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- End Employee Section -->
+
+        <!-- Footer -->
+        <div ng-controller="FooterCtrl" style="padding-top: 100px;">
+            <div class="navbar navbar-default navbar-fixed-bottom">
+                <div class="container">
+                    <p class="navbar-text pull-left">© 2017 - All Rights Reserved. N2S Global.
+                        <a href="http://quizans.com" target="_blank">QuizAns.com</a>
+                    </p>
+                    <p class="navbar-text pull-right">Site Built By <a href="http://www.novjean.tk/" target="_blank">Novjean</a>.
+                    </p>
+
+                    <!--<a href="http://quzans.com" class="navbar-btn btn-danger btn pull-right">
+            <span class="glyphicon glyphicon-star"></span>  All Rights Reserved</a>-->
+                </div>
+            </div>
+        </div>
+        <!-- Footer Ends -->
+    </div>
+    <!-- End Main Div -->
+
+</body>
+
+</html>
